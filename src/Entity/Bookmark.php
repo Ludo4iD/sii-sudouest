@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: BookmarkRepository::class)]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
-#[ORM\DiscriminatorMap(['person' => Bookmark::class, 'video' => Video::class])]
+#[ORM\DiscriminatorMap(['person' => Bookmark::class, 'video' => Video::class, 'image' => Image::class])]
 class Bookmark
 {
     #[ORM\Id]
@@ -38,6 +38,7 @@ class Bookmark
     private ?string $author = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(["getBookmarks"])]
     private ?\DateTimeInterface $createdOn;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]

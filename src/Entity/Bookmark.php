@@ -3,13 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\BookmarkRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BookmarkRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
 #[ORM\DiscriminatorMap(['person' => Bookmark::class, 'video' => Video::class, 'image' => Image::class])]
@@ -37,13 +36,12 @@ class Bookmark
     #[Groups(["getBookmarks"])]
     private ?string $author = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(["getBookmarks"])]
-    private ?\DateTimeInterface $createdOn;
+    private ?\DateTimeInterface $createdOn = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $publishedOn;
-
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $publishedOn = null;
 
     public function getId(): ?int
     {
@@ -66,9 +64,20 @@ class Bookmark
         return $this->provider;
     }
 
-    public function setProvider(string $provider): self
+    public function setProvider(?string $provider): self
     {
         $this->provider = $provider;
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): self
+    {
+        $this->type = $type;
         return $this;
     }
 
@@ -77,7 +86,7 @@ class Bookmark
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
         return $this;
@@ -88,7 +97,7 @@ class Bookmark
         return $this->author;
     }
 
-    public function setAuthor(string $author): self
+    public function setAuthor(?string $author): self
     {
         $this->author = $author;
         return $this;
@@ -99,9 +108,10 @@ class Bookmark
         return $this->createdOn;
     }
 
-    public function setCreatedOn(?\DateTimeInterface $createdOn): self
+    #[ORM\PrePersist]
+    public function setCreatedOn(): self
     {
-        $this->createdOn = $createdOn;
+        $this->createdOn = new \DateTime();
         return $this;
     }
 
@@ -114,5 +124,13 @@ class Bookmark
     {
         $this->publishedOn = $publishedOn;
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setPublishedOnPrePersist(): void
+    {
+        if (is_null($this->publishedOn)) {
+            $this->publishedOn = new \DateTime();
+        }
     }
 }

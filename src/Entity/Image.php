@@ -16,15 +16,15 @@ class Image extends Bookmark
     #[Groups(["getBookmarks"])]
     private ?int $height = null;
 
+
     public function getWidth(): ?int
     {
         return $this->width;
     }
 
-    public function setWidth(int $width): self
+    public function setWidth(?int $width): self
     {
         $this->width = $width;
-
         return $this;
     }
 
@@ -33,10 +33,9 @@ class Image extends Bookmark
         return $this->height;
     }
 
-    public function setHeight(int $height): self
+    public function setHeight(?int $height): self
     {
         $this->height = $height;
-
         return $this;
     }
 }

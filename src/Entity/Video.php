@@ -20,19 +20,18 @@ class Video extends Bookmark
     #[Groups(["getBookmarks"])]
     private ?int $height = null;
 
-    #[ORM\Column]
+    #[ORM\Column(length: 255)]
     #[Groups(["getBookmarks"])]
-    private ?int $duration = null;
+    private ?string $duration = null;
 
     public function getWidth(): ?int
     {
         return $this->width;
     }
 
-    public function setWidth(int $width): self
+    public function setWidth(?int $width): self
     {
         $this->width = $width;
-
         return $this;
     }
 
@@ -41,21 +40,19 @@ class Video extends Bookmark
         return $this->height;
     }
 
-    public function setHeight(int $height): self
+    public function setHeight(?int $height): self
     {
         $this->height = $height;
-
         return $this;
     }
-    public function getDuration(): ?int
+    public function getDuration(): ?string
     {
         return $this->duration;
     }
 
-    public function setDuration(int $duration): self
+    public function setDuration(?string $duration): self
     {
         $this->duration = $duration;
-
         return $this;
     }
 }
